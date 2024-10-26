@@ -17,7 +17,7 @@ namespace Assets.Scripts
         }
         static public void CreateGamemode(Rigidbody2D rb, PlayerMove host, bool onGroundRequired, float initalVelocity, float gravityScale, bool canHold = false, bool flipOnClick = false, float rotationMod = 0, float yVelocityLimit = Mathf.Infinity)
         {
-            if (!Input.GetKey(KeyCode.Space)|| canHold && host.OnGround())
+            if (!Input.GetKey(KeyCode.Space) || canHold && host.OnGround())
                 host.clickProcessed = false;
 
             rb.gravityScale = gravityScale * host.Gravity;
@@ -33,9 +33,10 @@ namespace Assets.Scripts
                 }
             }
 
-            if (host.OnGround() || !onGroundRequired)
+            // Chỉ xoay nếu không ở chế độ Ball
+            if ((host.OnGround() || !onGroundRequired) && host.CurrentGameMode != Gamemodes.Ball)
                 host.Sprite.rotation = Quaternion.Euler(0, 0, Mathf.Round(host.Sprite.rotation.eulerAngles.z / 90) * 90);
-            else
+            else if (host.CurrentGameMode != Gamemodes.Ball)
                 host.Sprite.Rotate(Vector3.back, rotationMod * Time.deltaTime * host.Gravity);
         }
     }

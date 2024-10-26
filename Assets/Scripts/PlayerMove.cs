@@ -13,6 +13,8 @@ public class PlayerMove : MonoBehaviour
     public Gamemodes CurrentGameMode;
     float[] SpeedValues = { 8.6f, 10.4f, 12.96f, 15.6f, 19.27f };
     float JumpPower = 21.6451f;
+    private float rotateSpeed = 200f;
+    private bool isRotating = false;
     private bool isDead = false;
     public Sprite CubeSprite;
     public Sprite ShipSprite;
@@ -55,6 +57,9 @@ public class PlayerMove : MonoBehaviour
     void Update()
     {
         GamePlay();
+        // Luôn gọi xoay khi ở chế độ Ball
+        if (CurrentGameMode == Gamemodes.Ball)
+            RotateBallSprite();
     }
 
     public void GamePlay()
@@ -114,13 +119,13 @@ public class PlayerMove : MonoBehaviour
         }
 
     }
-    void OnDrawGizmos()
-    {
-        Vector2 wallCheckPosition = new Vector2(Sprite.position.x, Sprite.position.y);
-        Vector2 boxSize = (Vector2.up * 1.1f) + (Vector2.right * 1.1f);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(wallCheckPosition, boxSize);
-    }
+    //void OnDrawGizmos()
+    //{
+    //    Vector2 wallCheckPosition = new Vector2(Sprite.position.x, Sprite.position.y);
+    //    Vector2 boxSize = (Vector2.up * 1.1f) + (Vector2.right * 1.1f);
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawWireCube(wallCheckPosition, boxSize);
+    //}
     public void ChangeGameMode()
     {
         CubeSpriteRenderrer.transform.localScale = Vector3.one;
@@ -128,30 +133,24 @@ public class PlayerMove : MonoBehaviour
         { 
             case Gamemodes.Cube:
                 CubeSpriteRenderrer.sprite = CubeSprite;
-                
                 break;
             case Gamemodes.Ball:
                 CubeSpriteRenderrer.sprite = BallSprite;
                 break;
             case Gamemodes.Ship:
                 CubeSpriteRenderrer.sprite = ShipSprite;
-                
                 break;
             case Gamemodes.Wave:
                 CubeSpriteRenderrer.sprite = WaveSprite;
-                
                 break;
             case Gamemodes.Robot:
                 CubeSpriteRenderrer.sprite = RobotSprite;
-                
                 break;
             case Gamemodes.UFO:
                 CubeSpriteRenderrer.sprite = UFOSprite;
-                
                 break;
             case Gamemodes.Spider:
                 CubeSpriteRenderrer.sprite = SpiderSprite;
-                
                 break;
         }
         // Optional: Adjust the scale based on the new sprite's size if needed
@@ -186,6 +185,12 @@ public class PlayerMove : MonoBehaviour
     void Ball()
     {
         Generic.CreateGamemode(rb, this, true, 0, 6.2f, false, true);
+        RotateBallSprite();
+    }
+    private void RotateBallSprite()
+    {
+        // Xoay liên tục quanh trục Z khi ở chế độ Ball
+        Sprite.Rotate(Vector3.back * rotateSpeed * Time.deltaTime);
     }
     void UFO()
     {
